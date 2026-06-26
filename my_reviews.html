@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block title %}All Reviews — GDPR Audit{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="page-header">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item active">All Reviews</li>
+        </ol>
+    </nav>
+    <h1><i class="bi bi-clock-history"></i> All Reviews</h1>
+    <p>All domains that have received at least one auditor verification</p>
+</div>
+
+{% if domains %}
+<div class="card animate-in">
+    <div class="card-header">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <h5>Reviewed Domains</h5>
+                <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">
+                    {{ pagination.total }} total
+                </span>
+            </div>
+            <button type="button" class="btn btn-sm btn-danger" id="deleteSelectedBtn" style="display: none;">
+                <i class="bi bi-trash"></i> Delete Selected (<span id="selectedCount">0</span>)
+            </button>
+        </div>
+    </div>
+    <div style="overflow-x: auto;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="width: 40px;"><input type="checkbox" class="form-check-input" id="selectAll"></th>
+                    <th>Domain</th>
+                    <th>Compliance</th>
+                    <th>Reviews</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for domain in domains %}
+                <tr data-domain-id="{{ domain.id }}">
+                    <td><input type="checkbox" class="form-check-input verification-checkbox" data-domain-id="{{ domain.id }}"></td>
+                    <td>
+                        <span style="font-family: var(--font-mono); font-size: 13px; color: var(--text-primary);">
+                            {{ domain.domain }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if domain.compliance_label == 'COMPLIANT' %}
+                            <span class="badge compliance-badge compliance-compliant">Compliant</span>
+                        {% elif domain.compliance_label == 'PARTIALLY_COMPLIANT' %}
+                            <span class="badge compliance-badge compliance-partial">Partial</span>
+                        {% elif domain.compliance_label == 'NON_COMPLIANT' %}
+                            <span class="badge compliance-badge compliance-non">Non-Compliant</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ domain.compliance_label or 'N/A' }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% set verifications = verification_map.get(domain.id, []) %}
+                        {% if verifications %}
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                            {% for v in verifications %}
+                            <div style="font-size: 12px;">
+                                <strong>{{ v.user.username }}</strong>
+                                &nbsp;
+                                {% if v.verification_status == 'correct' %}
+                                    <span class="badge bg-success">Correct</span>
+                                {% elif v.verification_status == 'incorrect' %}
+                                    <span class="badge bg-danger">Incorrect</span>
+                                {% elif v.verification_status == 'needs_review' %}
+                                    <span class="badge bg-warning">Needs Review</span>
+                                {% endif %}
+                                {% if v.review_complete %}
+                                    <span class="badge bg-primary">Complete</span>
+                                {% endif %}
+                                <span style="color: var(--text-muted); margin-left: 4px;">
+                                    {{ v.verified_at.strftime('%Y-%m-%d %H:%M') }}
+                                </span>
+                                {% if v.user_comment %}
+                                <br><em style="color: var(--text-muted);">"{{ v.user_comment }}"</em>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <span style="color: var(--text-muted); font-size: 13px;">No reviews</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: right;">
+                        <a href="{{ url_for('domain_detail', domain_id=domain.id) }}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-arrow-right"></i> View
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if pagination.pages > 1 %}
+    <div class="card-footer">
+        <nav>
+            <ul class="pagination justify-content-center mb-0">
+                {% if pagination.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('my_reviews', page=pagination.prev_num) }}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for page_num in pagination.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num == pagination.page %}
+                        <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+                        {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('my_reviews', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                        {% endif %}
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if pagination.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('my_reviews', page=pagination.next_num) }}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+{% else %}
+<!-- Empty state -->
+<div class="card animate-in" style="text-align: center; padding: 4rem 2rem;">
+    <div style="
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 64px; height: 64px;
+        background: var(--bg-elevated);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        font-size: 28px;
+        color: var(--text-muted);
+        margin: 0 auto 20px;
+    ">
+        <i class="bi bi-clock-history"></i>
+    </div>
+    <h3 style="font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">
+        No reviews yet
+    </h3>
+    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">
+        No domains have been reviewed yet. Start auditing from the dashboard.
+    </p>
+    <div>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+            <i class="bi bi-grid-1x2"></i> Go to Dashboard
+        </a>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.verification-checkbox');
+    const deleteBtn = document.getElementById('deleteSelectedBtn');
+    const selectedCountSpan = document.getElementById('selectedCount');
+
+    // Handle select all
+    selectAllCheckbox.addEventListener('change', function() {
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateDeleteButton();
+    });
+
+    // Handle individual checkbox changes
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            updateDeleteButton();
+            // Update select all checkbox state
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            const someChecked = Array.from(checkboxes).some(cb => cb.checked);
+            selectAllCheckbox.checked = allChecked;
+            selectAllCheckbox.indeterminate = someChecked && !allChecked;
+        });
+    });
+
+    // Update delete button visibility and count
+    function updateDeleteButton() {
+        const selectedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+        selectedCountSpan.textContent = selectedCount;
+        deleteBtn.style.display = selectedCount > 0 ? 'inline-block' : 'none';
+    }
+
+    // Handle delete button click
+    deleteBtn.addEventListener('click', function() {
+        const selectedDomainIds = Array.from(checkboxes)
+            .filter(cb => cb.checked)
+            .map(cb => cb.getAttribute('data-domain-id'));
+
+        if (selectedDomainIds.length === 0) return;
+
+        if (confirm(`Are you sure you want to delete ${selectedDomainIds.length} review(s)? This action cannot be undone.`)) {
+            fetch('/api/delete-verifications', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ domain_ids: selectedDomainIds })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Error deleting verifications: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(() => alert('Error deleting verifications'));
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,180 @@
+{
+  "checklist": [
+    {
+      "id": "1.1",
+      "category": "1. Controller & Contact Information",
+      "section": "Controller identity",
+      "question": "Does the policy identify the data controller (the organization responsible for your data)?",
+      "gdpr_reference": "Art. 13(1)(a)"
+    },
+    {
+      "id": "1.2",
+      "category": "1. Controller & Contact Information",
+      "section": "Contact details",
+      "question": "Does it provide the contact details of the controller (address, email, or phone)?",
+      "gdpr_reference": "Art. 13(1)(a)"
+    },
+    {
+      "id": "1.3",
+      "category": "1. Controller & Contact Information",
+      "section": "DPO (if applicable)",
+      "question": "If a Data Protection Officer (DPO) is required, does it provide the DPO's contact details?",
+      "gdpr_reference": "Art. 13(1)(b)"
+    },
+    {
+      "id": "2.1",
+      "category": "2. Purposes & Legal Basis",
+      "section": "Purposes of processing",
+      "question": "Does it clearly state the purposes for which personal data is processed?",
+      "gdpr_reference": "Art. 13(1)(c)"
+    },
+    {
+      "id": "2.2",
+      "category": "2. Purposes & Legal Basis",
+      "section": "Legal basis",
+      "question": "Does it specify the legal basis for each processing purpose (e.g., consent, contract, legitimate interest, legal obligation)?",
+      "gdpr_reference": "Art. 13(1)(c), Art. 6"
+    },
+    {
+      "id": "2.3",
+      "category": "2. Purposes & Legal Basis",
+      "section": "Legitimate interest (if used)",
+      "question": "If legitimate interest is used, does it describe what that legitimate interest is?",
+      "gdpr_reference": "Art. 13(1)(d), Recital 47"
+    },
+    {
+      "id": "2.4",
+      "category": "2. Purposes & Legal Basis",
+      "section": "Consent withdrawal",
+      "question": "For processing based on consent, does it explain how users can give and withdraw consent?",
+      "gdpr_reference": "Art. 13(2)(c); Art. 7(1)"
+    },
+    {
+      "id": "3.2",
+      "category": "3. Data Categories & Retention",
+      "section": "Retention period",
+      "question": "Does it specify the data retention period or the criteria used to determine retention (e.g., \"as long as your account is active\")?",
+      "gdpr_reference": "Art. 13(2)(a)"
+    },
+    {
+      "id": "4.1",
+      "category": "4. Data Recipients & Transfers",
+      "section": "Recipients",
+      "question": "Does it identify recipients or categories of recipients of the personal data (e.g., third-party service providers, advertisers)?",
+      "gdpr_reference": "Art. 13(1)(e)"
+    },
+    {
+      "id": "4.2",
+      "category": "4. Data Recipients & Transfers",
+      "section": "International transfers",
+      "question": "If data is transferred outside the EU/EEA, does it state that fact and describe the safeguards used (e.g., Standard Contractual Clauses, adequacy decision)?",
+      "gdpr_reference": "Art. 13(1)(f), Art. 46"
+    },
+    {
+      "id": "5.1",
+      "category": "5. User Rights",
+      "section": "Right to access",
+      "question": "Does it inform users of their right to access their personal data?",
+      "gdpr_reference": "Art. 13(2)(b); Art. 15"
+    },
+    {
+      "id": "5.2",
+      "category": "5. User Rights",
+      "section": "Right to rectification",
+      "question": "Does it inform users of their right to rectification (correct inaccurate data)?",
+      "gdpr_reference": "Art. 13(2)(b); Art. 16"
+    },
+    {
+      "id": "5.3",
+      "category": "5. User Rights",
+      "section": "Right to erasure",
+      "question": "Does it inform users of their right to erasure (\"right to be forgotten\")?",
+      "gdpr_reference": "Art. 13(2)(b); Art. 17"
+    },
+    {
+      "id": "5.4",
+      "category": "5. User Rights",
+      "section": "Right to restrict processing",
+      "question": "Does it inform users of their right to restrict processing?",
+      "gdpr_reference": "Art. 13(2)(b); Art. 18"
+    },
+    {
+      "id": "5.5",
+      "category": "5. User Rights",
+      "section": "Right to data portability",
+      "question": "Does it inform users of their right to data portability?",
+      "gdpr_reference": "Art. 13(2)(b); Art. 20"
+    },
+    {
+      "id": "5.6",
+      "category": "5. User Rights",
+      "section": "Right to object",
+      "question": "Does it inform users of their right to object to processing (especially for direct marketing)?",
+      "gdpr_reference": "Art. 13(2)(b); Art. 21"
+    },
+    {
+      "id": "5.7",
+      "category": "5. User Rights",
+      "section": "Right to withdraw consent",
+      "question": "Does it inform users of their right to withdraw consent at any time?",
+      "gdpr_reference": "Art. 13(2)(c); Art. 7(3)"
+    },
+    {
+      "id": "5.8",
+      "category": "5. User Rights",
+      "section": "Right to lodge a complaint",
+      "question": "Does it inform users of their right to lodge a complaint with a supervisory authority?",
+      "gdpr_reference": "Art. 13(2)(d)"
+    },
+    {
+      "id": "6.1",
+      "category": "6. Automated Decision-Making & Profiling",
+      "section": "Automated decisions",
+      "question": "If automated decision-making (including profiling) occurs, does it state that fact and provide meaningful information about the logic, significance, and consequences?",
+      "gdpr_reference": "Art. 13(2)(f), Art. 22"
+    },
+    {
+      "id": "7.1",
+      "category": "7. Cookies & Tracking (ePrivacy Directive)",
+      "section": "Cookie disclosure",
+      "question": "Does the policy mention the use of cookies or similar tracking technologies?",
+      "gdpr_reference": "ePrivacy Directive (Art. 5(3))"
+    },
+    {
+      "id": "7.2",
+      "category": "7. Cookies & Tracking (ePrivacy Directive)",
+      "section": "Cookie management",
+      "question": "Does it explain how users can manage or disable cookies?",
+      "gdpr_reference": "ePrivacy Directive"
+    },
+    {
+      "id": "7.3",
+      "category": "7. Cookies & Tracking (ePrivacy Directive)",
+      "section": "Third-party cookies",
+      "question": "Does it state whether third-party cookies are used?",
+      "gdpr_reference": "ePrivacy Directive (Art. 5(3))"
+    },
+    {
+      "id": "8.1",
+      "category": "8. Transparency & Accessibility",
+      "section": "Clear language",
+      "question": "Is the policy presented in clear, plain, and intelligible language (not overly legalistic or confusing)?",
+      "gdpr_reference": "Art. 12(1)"
+    },
+    {
+      "id": "8.2",
+      "category": "8. Transparency & Accessibility",
+      "section": "Easy access",
+      "question": "Is the policy easily accessible (e.g., linked in the footer, not buried)?",
+      "gdpr_reference": "Art. 12(1)"
+    },
+    {
+      "id": "9.1",
+      "category": "9. Data Not Collected from User (Art. 14)",
+      "section": "Third-party data sources",
+      "question": "If the website collects data from third parties (not directly from the user), does it provide the categories of data, sources, and the additional transparency information listed in Art. 14?",
+      "gdpr_reference": "Art. 14(1)-(4)"
+    }
+  ],
+  "total_questions": 25
+}

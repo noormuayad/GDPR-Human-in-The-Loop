@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — GDPR Audit{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<div class="page-header">
+    <h1><i class="bi bi-grid-1x2"></i> Dashboard</h1>
+    <p>Overview of domain compliance across your audit queue</p>
+</div>
+
+<!-- Stat Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3 animate-in animate-delay-1">
+        <div class="stat-card total">
+            <div class="stat-label">Total Domains</div>
+            <div class="stat-value">{{ stats.total_domains }}</div>
+            <i class="bi bi-globe stat-icon"></i>
+        </div>
+    </div>
+    <div class="col-6 col-md-3 animate-in animate-delay-2">
+        <div class="stat-card compliant">
+            <div class="stat-label">Compliant</div>
+            <div class="stat-value">{{ stats.compliant }}</div>
+            <i class="bi bi-check-circle stat-icon"></i>
+        </div>
+    </div>
+    <div class="col-6 col-md-3 animate-in animate-delay-3">
+        <div class="stat-card partial">
+            <div class="stat-label">Partial</div>
+            <div class="stat-value">{{ stats.partial }}</div>
+            <i class="bi bi-dash-circle stat-icon"></i>
+        </div>
+    </div>
+    <div class="col-6 col-md-3 animate-in animate-delay-4">
+        <div class="stat-card non-compliant">
+            <div class="stat-label">Non-Compliant</div>
+            <div class="stat-value">{{ stats.non_compliant }}</div>
+            <i class="bi bi-x-circle stat-icon"></i>
+        </div>
+    </div>
+</div>
+
+<!-- My Progress -->
+<div class="row g-3 mb-4 animate-in animate-delay-2">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header">
+                <h5>My Progress</h5>
+            </div>
+            <div class="card-body" style="display: flex; gap: 2rem;">
+                <div>
+                    <div class="stat-label">Verified by me</div>
+                    <div style="font-family: var(--font-mono); font-size: 24px; color: var(--text-primary);">{{ stats.my_verified }}</div>
+                </div>
+                <div style="width: 1px; background: var(--border-subtle);"></div>
+                <div>
+                    <div class="stat-label">Reviews complete</div>
+                    <div style="font-family: var(--font-mono); font-size: 24px; color: var(--text-primary);">{{ stats.my_completed }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4 animate-in animate-delay-2">
+    <div class="card-body" style="padding: 16px 20px;">
+        <form method="GET">
+                <div class="row g-2 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label">Search</label>
+                    <input type="text" class="form-control" name="search"
+                           placeholder="Filter by domain name…" value="{{ search }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Compliance</label>
+                    <select class="form-select" name="compliance">
+                        <option value="">All statuses</option>
+                        <option value="COMPLIANT" {% if compliance_filter == 'COMPLIANT' %}selected{% endif %}>Compliant</option>
+                        <option value="PARTIALLY_COMPLIANT" {% if compliance_filter == 'PARTIALLY_COMPLIANT' %}selected{% endif %}>Partial</option>
+                        <option value="NON_COMPLIANT" {% if compliance_filter == 'NON_COMPLIANT' %}selected{% endif %}>Non-Compliant</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Language</label>
+                    <select class="form-select" name="language">
+                        <option value="">All languages</option>
+                        {% for lang in available_languages %}
+                        <option value="{{ lang }}" {% if language_filter == lang %}selected{% endif %}>{{ lang }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Audit state</label>
+                    <select class="form-select" name="audit">
+                            <option value="">All domains</option>
+                            <option value="not_audited_by_anyone" {% if audit_filter == 'not_audited_by_anyone' %}selected{% endif %}>Not audited by anyone</option>
+                            <option value="not_audited" {% if audit_filter == 'not_audited' %}selected{% endif %}>Not audited by me</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                        <i class="bi bi-funnel"></i> Filter
+                    </button>
+                </div>
+                <div class="col-md-1">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary" style="width: 100%; justify-content: center;">
+                        Clear
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Domain Table -->
+<div class="card animate-in animate-delay-3">
+    <div class="card-header">
+        <h5>Domains</h5>
+        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">
+            {{ pagination.total }} total
+        </span>
+    </div>
+    <div style="overflow-x: auto;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Domain</th>
+                    <th>Compliance</th>
+                    <th>Score</th>
+                    <th>Language</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for domain in domains %}
+                <tr>
+                    <td>
+                        <span style="font-family: var(--font-mono); font-size: 13px; color: var(--text-primary);">
+                            {{ domain.domain }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if domain.compliance_label == 'COMPLIANT' %}
+                            <span class="badge compliance-badge compliance-compliant">Compliant</span>
+                        {% elif domain.compliance_label == 'PARTIALLY_COMPLIANT' %}
+                            <span class="badge compliance-badge compliance-partial">Partial</span>
+                        {% elif domain.compliance_label == 'NON_COMPLIANT' %}
+                            <span class="badge compliance-badge compliance-non">Non-Compliant</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ domain.compliance_label or 'N/A' }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span style="font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary);">
+                            {% if domain.compliance_score %}
+                                {{ domain.compliance_score }}<span style="color: var(--text-muted);">/100</span>
+                            {% else %}
+                                <span style="color: var(--text-muted);">—</span>
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td style="color: var(--text-muted); font-size: 13px;">
+                        {{ domain.language_detected or '—' }}
+                    </td>
+                    <td style="text-align: right;">
+                        <a href="{{ url_for('domain_detail', domain_id=domain.id) }}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-arrow-right"></i> Review
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if pagination.pages > 1 %}
+    <div class="card-footer">
+        <nav>
+            <ul class="pagination justify-content-center mb-0">
+                {% if pagination.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('dashboard', page=pagination.prev_num, search=search, compliance=compliance_filter, language=language_filter, audit=audit_filter) }}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for page_num in pagination.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num == pagination.page %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_num }}</span>
+                        </li>
+                        {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('dashboard', page=page_num, search=search, compliance=compliance_filter, language=language_filter, audit=audit_filter) }}">{{ page_num }}</a>
+                        </li>
+                        {% endif %}
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">…</span>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if pagination.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('dashboard', page=pagination.next_num, search=search, compliance=compliance_filter, language=language_filter, audit=audit_filter) }}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
